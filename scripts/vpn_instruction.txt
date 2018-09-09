@@ -1,0 +1,5 @@
+1. Install openvpn on linux server
+2. Copy your configuration into /etc/openvpn (default folder)
+3. Use command to login vpn
+   openvpn --config /etc/openvpn/client.ovpn --ca /etc/openvpn/ca.crt
+

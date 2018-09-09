@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Yang Jun
+  description: Install MySQL, ngx_openresty, JDK(java), Jetty, Redis on CentOS.
+  license: MIT
+  min_ansible_version: 1.6
+  platforms:
+  - name: RedHat
+    versions:
+    - 6
+  categories:
+  - Service
+dependencies: []

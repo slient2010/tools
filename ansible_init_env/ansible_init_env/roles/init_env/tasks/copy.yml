@@ -1,0 +1,56 @@
+  # Copy mysql files to CentOS
+  - name: Copy Mysql Software To CentOS
+    copy: src={{ mysql_tarball }} dest=/tmp/{{ mysql_tarball }} owner=root group=root
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Create Mysql User In CentOS
+    user: name={{ mysql_user }} state=present createhome=no shell=/sbin/nologin
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Copy Mysql Start Script To CentOS
+    template: src=mysqld dest=/etc/init.d/mysqld owner=root group=root mode=0755
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Copy Install Mysql Script  To CentOS
+    template: src={{ mysql_install_script }} dest=/tmp/ owner=root group=root mode=0755
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Copy Mysql Config To CentOS
+    template: src=my.cnf dest=/tmp/ owner=root group=root mode=0644
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Copy Mysql Security Script To CentOS
+    template: src=mysql_security.sh dest=/tmp/ owner=root group=root mode=0755
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+# Copy ngx_openresty files to CentOS
+  - name: Copy ngx_openresty source code Software To RedHat Client
+    copy: src={{ ngx_openresty_tarball }} dest=/tmp/{{ ngx_openresty_tarball }} owner=root group=root
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Copy install ngx_openresty shell to RedHat Client
+    template: src={{ ngx_openresty_install_script }} dest=/tmp/ owner=root group=root mode=0755
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+# Copy JDK files to CentOS
+  - name: Copy JDK source code Software To RedHat Client
+    copy: src={{ jdk_tarball }} dest=/tmp/{{ jdk_tarball }} owner=root group=root
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Copy Install JDK Script To RedHat Client
+    template: src={{ java_install_script }} dest=/tmp/ owner=root group=root mode=0755
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+# Copy Jetty files to CentOS
+  - name: Copy Jetty source code Software To RedHat Client
+    copy: src={{ jetty_tarball }} dest=/tmp/{{ jetty_tarball }} owner=root group=root
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+# Copy redis files to CentOS
+  - name: Copy Redis source code Software To RedHat Client
+    copy: src={{ redis_tarball }} dest=/tmp/{{ redis_tarball }} owner=root group=root
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Copy Install Redis Script  To RedHat Client
+    template: src={{ redis_install_script }} dest=/tmp/ owner=root group=root mode=0755
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6

@@ -1,0 +1,31 @@
+{% for i in  testlist %}
+{{ i }}  <br/>
+{% endfor %}
+
+<div>
+<ul>
+{% for j in  List %}
+{{ j }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+</ul>
+</div>
+<br />
+<br />
+<br />
+<br />
+
+<ul>
+{% for item in List %}
+  <li>
+    {{ item }} {% if not forloop.last %}, {% endif %}
+  </li>
+{% endfor %}
+</ul>
+
+<ul>
+{% for k in Ltest %} 
+   <li>{{ k }}</li>
+{% empty %}
+   <li> sorry, list is empty.</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,36 @@
+# Public variables
+app_dir: /data
+source_server: 172.17.0.4/softwares
+
+# Mysql variables
+mysql_basedir: /data/mysql/basedir
+mysql_datadir: /data/mysql/datadir
+mysql_user: mysql
+mysql_database_user: root
+mysql_passwd: 'xxxxx&&aa11'
+mysql_port: 3306
+mysql_sock: /data/mysql/datadir/mysql.sock
+mysql_charset: utf8
+mysql_collation: utf8_general_ci
+mysql_version: Percona-Server-5.5.21-rel25.1.tar.gz
+mysql_tarball: mysql.tar.gz
+mysql_install_script: install_mysql.sh
+
+# ngx_openresty variables
+ngx_openresty_version: ngx_openresty-1.7.10.2
+ngx_openresty_tarball: ngx_openresty-1.7.10.2.tar.gz
+ngx_openresty_install_script: install_ngx_openresty.sh
+
+# JDK variables
+jdk_tarball: jdk-8u65-linux-x64.tar.gz
+java_version: jdk1.8.0_65
+java_install_script: install_java.sh
+
+# Jetty variables
+jetty_version: jetty-distribution-9.3.5.v20151012
+jetty_tarball: jetty-distribution-9.3.5.v20151012.tar.gz
+
+# Redis variables
+redis_version: redis-2.8.9
+redis_tarball: redis-2.8.9.tar.gz
+redis_install_script: install_redis.sh

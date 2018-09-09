@@ -1,0 +1,28 @@
+mysql中unicode编码设置（Django）
+
+MySQL默认的编码是一个非常坑的东西……他不能存中文。居然不是utf。
+对于Django，虽然文档上写默认编码是UTF，但是那个不是针对MySQL的表格写的。。而且，一般来说，还需要设置COLLATE
+所以这里整理一下。。
+首先是Django中的setting，其实看文档有一个options的参数，不过因为在教程里没有写，可能会是个误区。。
+setting.py
+	
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'name',
+        'USER': 'user',
+        'PASSWORD': 'pwd',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'CHARSET': 'utf8',
+        'COLLATE': 'utf8_general_ci'
+    }
+}
+
+对于已经创建过的数据库，可以用sql命令。一般来说要改两个，一个是数据库，一个是表。大部分情况，表是默认继承数据库的设置，而数据库的设置改了，并不会同步到表。。
+
+	
+ALTER DATABASE <DATABASE_NAME> CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci
+ALTER TABLE <table name> CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+

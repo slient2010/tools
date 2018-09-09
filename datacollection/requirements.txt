@@ -1,0 +1,4 @@
+django
+django-celery
+redis
+rpyc

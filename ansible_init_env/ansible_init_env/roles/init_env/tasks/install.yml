@@ -1,0 +1,84 @@
+# Install Mysql
+  - name: Create Mysql Install Dir
+    file: dest={{ app_dir }} state=directory
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Uncompression Mysql Software To RedHat Client
+    shell: tar zxf /tmp/{{ mysql_tarball }} -C /data/
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Modify Mysql Dir Permission In RedHat Client
+    file: path={{ item }} owner={{ mysql_user }} group={{ mysql_user }} mode=0755
+    with_items:
+      - "{{ mysql_datadir }}"
+      - "{{ mysql_basedir }}"
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Install Mysql Script In RedHat Client
+    shell: /bin/bash /tmp/{{ mysql_install_script }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Start Myql Security Script In RedHat Client
+    shell: /bin/bash /tmp/mysql_security.sh
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Add Boot Start Mysql Service In RedHat Client
+    shell: chkconfig --level 345 mysqld on
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Delete ngx_openresty compression Software in RedHat Client
+    shell: rm -rf /tmp/{{ mysql_tarball }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6    
+
+
+# Install Ngx_openresty
+  - name: Uncompression Ngx_openresty Software To RedHat Client
+    shell: tar zxf /tmp/{{ ngx_openresty_tarball }} -C /tmp/
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Install Ngx_openresty Script In RedHat Client
+    shell: /bin/bash /tmp/{{ ngx_openresty_install_script }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Delete ngx_openresty compression Software in RedHat Client
+    shell: rm -rf /tmp/{{ ngx_openresty_tarball }}  /tmp/{{ ngx_openresty_version }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+# Install JDK(java)
+  - name: Uncompression JDK Software To RedHat Client
+    shell: tar zxf /tmp/{{ jdk_tarball }}  -C {{ app_dir }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Install JDK Script In RedHat Client
+    shell: /bin/bash /tmp/{{ java_install_script }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Delete JDK compression Software In RedHat Client
+    shell: rm -rf /tmp/{{ jdk_tarball }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+# Install Jetty
+  - name: Uncompression Jetty Software To {{ app_dir }}
+    shell: tar zxf /tmp/{{ jetty_tarball }}  -C {{ app_dir }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Copy Jetty to RedHat Client
+    shell: mv {{ app_dir }}/{{ jetty_version }} {{ app_dir }}/jetty
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Delete Jetty compression Software In RedHat Client
+    shell: rm -rf /tmp/{{ jetty_tarball }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+# Install Redis
+  - name: Uncompression Redis Software To RedHat Client
+    shell: tar zxf /tmp/{{ redis_tarball }}  -C {{ app_dir }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Install Redis Script In RedHat Client
+    shell: /bin/bash /tmp/{{ redis_install_script }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6
+
+  - name: Delete Redis compression Software In RedHat Client
+    shell: rm -rf /tmp/{{ redis_tarball }} {{ app_dir }}/{{ redis_version }}
+    when: ansible_os_family == "RedHat" and ansible_distribution_version|int >=6

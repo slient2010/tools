@@ -1,0 +1,17 @@
+<!--
+<!doctype html>
+<html>
+  <head>
+    <title>Welcome!</title> 
+  <head>
+  <body>
+    Welcome to my first django website!
+  </body>
+</html>
+-->
+
+{% extends 'base.html' %}
+{% block title %} welcome home page {% endblock %}
+{% block content %}
+{% include 'ad.html' %}
+{% endblock %}

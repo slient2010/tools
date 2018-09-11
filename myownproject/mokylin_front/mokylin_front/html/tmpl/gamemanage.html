@@ -1,0 +1,613 @@
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!--<h1 class="page-header">Tables</h1>-->
+                    <h1 class="page-header">{{ if .Project }}{{ .Project }}(管理){{ else }} 游戏管理{{ end }}</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            游戏服管理
+                        </div>
+                        {{ if eq .Operation "agent" }}
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th>ClientID</th>
+                                            <th>游戏服路径</th>
+                                            <th>游戏服数量</th>
+                                            <th>Client状态</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{range .results}} 
+                                    <tr class="gradeC">
+                                        <td>{{.ClientId}}</td>
+                                        <td>{{.GamePath}}</td>
+                                        <td>{{.GameNums}}</td>
+                                        {{if eq .ClientStatus 1 }}
+                                        <td>已连接</td>
+                                        {{ else }}
+                                        <td>未连接</td>
+                                        {{ end }} 
+                                    </tr>
+                                    {{end}}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                        {{ else if eq .Operation "gameservers" }}
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                           <div id="operatingArea">
+				<input id="checkAll" type="checkbox" />
+				<label for="checkAll" class="mr20">全选</label>
+                        
+				<input id="autoRefresh" type="checkbox" value=""/> 
+				<label for="autoRefresh" class="mr20">自动刷新</label>
+                        
+				<input id="createServer" class="btn btn-info" type="button" value="创建" />
+				<input id="startServer" class="btn btn-info" type="button" value="开启" />
+				<input id="stopServer" class="btn btn-info"  type="button" value="关闭" />
+				<!-- <input id="updateServer" type="button" value="更新配置" /> -->
+				<input id="updateServerThenRun" class="btn btn-info" type="button" value="更新并启动" />
+   			    </div>
+                            <br />
+                            <div class="dataTable_wrapper">
+                                <!--<table class="table table-striped table-bordered table-hover" id="dataTables-example" id="servers">-->
+                                <table class="table table-striped table-bordered table-hover" id="servers">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>开服时间</th>
+                                            <th>游戏服</th>
+                                            <th>后端版本</th>
+                                            <th>客户端</th>
+                                            <th>游戏服状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{range .results}} 
+                                    <tr class="gradeC" globalid="{{.Clientid}}__{{.Game}}">
+                                        <td><input type="checkbox"/></td>
+                                        <td>{{.Starttime}}</td>
+                                        <td>{{.Game}}</td>
+                                        <td>{{.BackendVersion}}</td>
+                                        <td>{{.Clientid}}</td>
+                                        {{if eq .GameStatus 1}}
+                                        <td>已开启</td>
+                                        {{ else if eq .GameStatus -1 }}
+                                        <td>error</td>
+                                        {{ else }} 
+                                        <td>未开启</td>
+                                        {{ end }}
+                                        <td><a href="">更改配置</a></td>
+                                    </tr>
+                                    {{end}}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                              <div class="modal" id="mymodal1">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+   	                        		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+   	                        		<h4 class="modal-title">创建服务器</h4>
+                                          </div>
+		  			 <form action="/serverCreatePost" method="post">
+					   <div class="modal-body"> 
+	 				 	 <span>所属平台:</span>
+						 <select id="platformId" name="platformId" class="select">
+						{{range .PlatformAndIds}}
+						<option value="{{.Agent_id}}">{{.Agent}}</option>
+						{{end}}
+						</select>
+						<input id="addServer" type="button" value="添加服务器" />
+						<br>
+						<br>
+					
+						<div id="serverInfoArea">
+							<input id="serverIds" name="serverIds" type="hidden" class="input" />
+							<input id="serverCreateTimes" name="serverCreateTimes" type="hidden" class="input" />
+							<!-- <br> -->
+                                                
+							<span>服务器ID:</span>
+							<input type="text" class="input serverId" />
+							<span>开服时间:</span>
+							<input type="text" class="input serverCreateTime" />
+                  					<br/>
+						</div>
+						<br>
+						<span>所用资源:</span>
+						<select id="resUrl" name="resUrl" class="select" >
+							{{range .BackendVersions}}
+								<option value="{{.}}">{{.}}</option>
+							{{end}}
+						</select>
+						<br>
+						<br>
+                                                
+						<span>安装机器:</span>
+						<select id="clientId" name="clientId" class="select">
+							{{range .ClientAndGames}}
+								<option value="{{.ClientId}}">{{.ClientId}}_{{.GameNums}}个服</option>
+							{{end}}
+						</select>
+                                                <!--
+						<br>
+						<span>数据库情况:</span>
+						<select id="dbused" name="dbused" class="select">
+							{{range .DBUsed}}
+								<option>{{.DbCname}}_{{.DbCount}}个服</option>
+							{{end}}
+						</select>
+                                                -->
+						<br>
+						
+		                        </div>
+   	                               <div class="modal-footer">
+   	                        	    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                                            <button type="submit" class="btn btn-primary">提 交</button>  
+       		                     </div>
+					</form>
+
+       		                     </div>
+               		         </div>
+                        </div>
+
+
+                        </div>
+                        <!-- /.panel-body -->
+                        {{ else if eq .Operation "merge" }}
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                              <button type="button" class="btn btn-info">合服</button>
+                              <div class="modal" id="mymodal">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+   	                        			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+   	                        			<h4 class="modal-title">模态弹出窗标题</h4>
+   	                        		</div>
+   	                        		<div class="modal-body">
+   	                        			<p>模态弹出窗主体内容</p>
+   	                        		</div>
+   	                        		<div class="modal-footer">
+   	                        			<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+   	                        			<button type="button" class="btn btn-primary">保存</button>
+   	                        		</div>
+   	                        	</div><!-- /.modal-content -->
+   	                             </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+                        </div>
+                        <!-- /.panel-body -->
+                        {{ end }}
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <!-- /.row -->
+            
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="static/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="static/js/metisMenu.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="static/js/jquery.dataTables.min.js"></script>
+    <!--
+    <script src="static/js/dataTables.bootstrap.min.js"></script>
+    -->
+
+    <!-- Custom Theme JavaScript -->
+    <script src="static/js/sb-admin-2.js"></script>
+
+   <script type="text/javascript" src="static/js/jquery.form.min.js"></script>
+   <script type="text/javascript" src="static/js/jquery.datetimepicker.js"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+<!--<script>
+////$(document).ready(function() {
+////   // $('#dataTables-example').DataTable({
+////    $('#servers').DataTable({
+////            responsive: true
+////    });
+////});
+////</script>
+-->
+<script>
+  $(function(){
+    $(".btn").click(function(){
+      $("#mymodal").modal("toggle");
+    });
+  });
+
+  $(function(){
+    $("#createServer").click(function(){
+      $("#mymodal1").modal("toggle");
+    });
+  });
+</script>
+
+
+<script type="text/javascript">
+	var oTable = $('#servers').dataTable({
+        	"bPaginate": false,
+        	"bDeferRender" : true,
+        	"bAutoWidth":false,
+		"aoColumnDefs": [
+////////		{ "sWidth": "55px", "aTargets": [ 1 ] },
+////////		{ "sWidth": "60px", "aTargets": [ 3 ] },
+////////                { "sWidth": "150px", "aTargets": [ 4 ] },
+////////                { "sWidth": "40px", "aTargets": [ 5 ] },
+////////		{ "sWidth": "30px", "aTargets": [ 6 ] },
+		{ "asSorting": [ "desc", "asc" ], "aTargets": [ 0 ] },
+],
+	});
+
+	//只勾选搜索出来的结果
+	var eventFired = function () {
+	    $('#checkAll').attr("checked",false);
+            $('#checkAll').click(function(){
+            var checked = this.checked;
+            $('tbody input').each(function(){
+                this.checked = checked;
+            });
+        });
+       
+    }
+	oTable.on('search.dt',function(){eventFired();});
+
+	oTable.fnSort( [ [1,'desc'] ] );
+
+	oTable.on('mouseenter', '.gameCfgView', function(event) {
+		$(this).qtip({
+	      content: {
+	          attr: 'gameCfg',
+	      },
+	      position: {
+	          viewport: $(window)
+	      },
+	      show: {
+	      	solo: true,
+	      	event: event.type,
+           	ready: true,
+	      },
+	      hide: {
+	          fixed: true,
+	          delay: 300
+	      }
+	  	}, event);
+	});
+
+	tickUpdateStat();
+	updateServerStatTimer = setInterval(tickUpdateStat, 5000);
+
+	var updating = false;
+	function tickUpdateStat() {
+		if (!updating) {
+			if ($('#autoRefresh').is(":checked")){
+				updating = true;
+				$.get("/serverStats", function(data) {
+					for (var i=0, l=data.length; i<l; i++) {
+						doUpdateStat(data[i]);
+					}
+					updating = false;
+				});	
+			}
+		}
+	}
+
+	function doUpdateStat(item) {
+		var clientId = item[0];
+		var serverName = item[1];
+		var statDesc = item[2];
+		var statErr = item[3];
+
+		var style = "";
+		if (statDesc == '未开启') {
+			style = 'colorRed';
+		} else if (statDesc == '已开启')  {
+			style = 'colorGreen';
+		} else if (statDesc.indexOf('中') > 0) {
+			style = 'colorBlue';
+		}
+
+		var divStr = "<div class='" + style + "'>" + statDesc + "</div>"
+		var globalid = clientId + "__" + serverName;
+
+		var oTableNode = oTable.$("tr[globalid='" + globalid + "']");
+		if (oTableNode.length > 0) {
+			oTable.fnUpdate(divStr, oTableNode[0], 6);
+		} else {
+			refreshServers();
+			return;
+		}
+
+		if (statErr != "" && showingStatErr[globalid] == undefined) {
+			showingStatErr[globalid] = statErr
+			createGrowl(false, statErr, function() {
+				$.get("/serverClearStatErr?clientId=" + clientId + "&serverName=" + serverName, function(data) {
+					if (data == "1") {
+						showingStatErr[globalid] = undefined;
+						if (statErr == '更新成功!' || statErr == '创建成功!') {
+							refreshServers();
+						}
+					} else {
+						createGrowl(false, data);
+					}
+				});
+			});
+		}
+	}
+
+
+	//$('#checkAll').click(function() {
+	//	var checked = this.checked;
+	//	oTable.$('input').each(function() {
+	//		this.checked = checked;
+	//	});
+	//});
+
+////////$('#createServer').click(function() {
+////////	$.get('/serverCreate', function(data) {
+////////		popupShow(data);
+////////	});
+////////});
+
+	$('#startServer').click(function() {
+		var items = '';
+		var globalids = '';
+		oTable.$('input').each(function() {
+			if (this.checked) {
+				var globalid = $(this).parent().parent().attr('globalid');
+				items += globalid + '&&';
+				globalids += globalid + "\n";
+			}
+		});
+		if (items == '') {
+			alert('请选择服务器！');
+			return;
+		}
+		items = items.substring(0, items.length - 2);
+
+		if (!confirm('确认开启服务器？\n' + globalids)) {
+			return;
+		}
+
+		$.post('/serverStart', { 'items': items }, function(data) {
+			alert(data);
+		});
+	});
+
+	$('#stopServer').click(function() {
+		var items = '';
+		var globalids = '';
+		oTable.$('input').each(function() {
+			if (this.checked) {
+				var globalid = $(this).parent().parent().attr('globalid');
+				items += globalid + '&&';
+				globalids += globalid + "\n";
+			}
+		});
+		if (items == '') {
+			alert('请选择服务器！');
+			return;
+		}
+		items = items.substring(0, items.length - 2);
+
+		if (!confirm('确认关闭服务器？\n' + globalids)) {
+			return;
+		}
+
+		$.post('/serverStop', { 'items': items }, function(data) {
+			alert(data);
+		});
+	});
+
+	$('#updateServer').click(function() {
+		// var items = '';
+		// var globalids = '';
+		// oTable.$('input').each(function() {
+		// 	if (this.checked) {
+		// 		var globalid = $(this).parent().parent().attr('globalid');
+		// 		items += globalid + '&&';
+		// 		globalids += globalid + "\n";
+		// 	}
+		// });
+		// if (items == '') {
+		// 	alert('请选择服务器！');
+		// 	return;
+		// }
+		// items = items.substring(0, items.length - 2);
+
+		var items = [];
+		oTable.$('input').each(function() {
+			if (this.checked) {
+				var globalid = $(this).parent().parent().attr('globalid');
+				items.push(globalid);
+			}
+		});
+
+		if (items.length == 0) {
+			alert('请选择服务器！');
+			return;
+		}
+
+		items.sort();
+
+		$.post('/serverUpdate', { 'items': items.join('&&'), 'type': 'cfg' }, function(data) {
+			popupShow(data);
+		});
+	});
+
+	$('#servers .gameCfgView').click(function() {
+		var globalid = $(this).parent().parent().attr('globalid');
+		$.post('/serverUpdate', { 'items': globalid, 'type': 'cfg' }, function(data) {
+			popupShow(data);
+		});
+		return false;
+	});
+
+	$('#updateServerThenRun').click(function() {
+		var items = [];
+		oTable.$('input').each(function() {
+			if (this.checked) {
+				var globalid = $(this).parent().parent().attr('globalid');
+				items.push(globalid);
+			}
+		});
+
+		if (items.length == 0) {
+			alert('请选择服务器！');
+			return;
+		}
+
+		items.sort();
+
+		$.post('/serverUpdate', { 'items': items.join('&&') }, function(data) {
+			popupShow(data);
+		});
+	});
+</script>	
+
+<script type="text/javascript">
+	function addInputListener() {
+		$('#serverInfoArea .serverCreateTime').datetimepicker({
+			lang:'ch',
+			format:'Y-m-d',
+			timepicker:false,
+		});
+
+		var sep = "&&";
+		$('#serverInfoArea .serverId').blur(function() {
+			var serverIdsVal = "";
+			$('#serverInfoArea .serverId').each(function() {
+				var val = $(this).val();
+				if (val != "") {
+					serverIdsVal += val + sep;
+				}
+			});
+			serverIdsVal = serverIdsVal.substring(0, serverIdsVal.length-2);
+			$('#serverIds').val(serverIdsVal);
+		});
+
+		$('#serverInfoArea .serverCreateTime').blur(function() {
+			var serverCreateTimesVal = "";
+			$('#serverInfoArea .serverCreateTime').each(function() {
+				var val = $(this).val();
+				if (val != "") {
+					serverCreateTimesVal += val + sep;
+				}
+			});
+
+			serverCreateTimesVal = serverCreateTimesVal.substring(0, serverCreateTimesVal.length-2);
+			$('#serverCreateTimes').val(serverCreateTimesVal);
+		});
+	}
+	
+	addInputListener();
+
+	$('#addServer').click(function() {
+		$("#serverInfoArea").append('<span>服务器ID:</span> <input type="text" class="input serverId" /> <span>开服时间:</span> <input type="text" class="input serverCreateTime" /><br>');
+		addInputListener();
+	});
+
+	$('form').ajaxForm({
+		beforeSubmit: function(formData, jqForm, options) {
+			$('#serverInfoArea .serverId').each(function() {
+				if ($(this).val() == "") {
+					alert("请输入服务器ID！");
+					return false;
+				}
+			});
+
+			$('#serverInfoArea .serverCreateTime').each(function() {
+				var val = $(this).val();
+				if (val == "") {
+					alert("请输入开服时间！");
+					return false;
+				}
+			});
+
+			var serverIds = $("#serverIds").val();
+			if (serverIds == "") {
+				alert("请输入服务器ID！");
+				return false;
+			}
+
+			var serverCreateTimes = $("#serverCreateTimes").val();
+			if (serverCreateTimes == "") {
+				alert("请输入开服时间！");
+				return false;
+			}
+
+			var platformId = $('#platformId').val();
+			if (platformId == null) {
+				alert("请选择平台！");
+				return false;
+			}
+
+			var resUrl = $('#resUrl').val();
+			if (resUrl == null) {
+				alert("请选择资源！");
+				return false;
+			}
+
+			var clientId = $('#clientId').val();
+			if (clientId == null) {
+				alert("请选择安装机器！");
+				return false;
+			}
+
+			return confirm('确认操作？');
+		},
+
+	    success: function(s) {
+	    	// var sa = s.split("@@@")
+	    	// if (sa.length == 1) {
+	    	// 	alert(s);
+	    	// } else {
+	    	// 	var oTable = $('#servers').dataTable();
+	    	// 	oTable.fnAddData(sa);
+	    	// 	oTable.$('td').addClass('center');
+		    // 	popupHide();
+		    // 	alert("创建成功!");
+	    	// }
+	    	if (s == "1") {
+	    		popupHide();
+	    		alert("提交成功!");
+	    	} else {
+	    		alert(s);
+	    	}
+	    },
+	});
+
+
+	$('#popupHide').click(function() {
+		popupHide();
+	});
+</script>

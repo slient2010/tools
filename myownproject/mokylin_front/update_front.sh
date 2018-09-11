@@ -1,0 +1,6 @@
+#!/bin/bash
+
+go-bindata -pkg=mokylin_front -nocompress=true -debug=true mokylin_front/html/...
+go-bindata -pkg=mokylin_front -nocompress=true mokylin_front/html/...
+
+mv bindata.go mokylin_front

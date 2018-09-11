@@ -1,0 +1,182 @@
+<div class="title">
+创建服务器
+</div>
+<hr>
+
+<form action="/serverCreatePost" method="post">
+	<span class="label">所属平台:</span>
+	<select id="platformId" name="platformId" class="select">
+        <!--
+		{{range $platformId, $platformName := .Platforms}}
+		<option value="{{$platformId}}">{{$platformName}}</option>
+		{{end}}
+        -->
+	</select>
+	<input id="addServer" type="button" value="添加服务器" />
+	<br>
+	
+	<div id="serverInfoArea">
+		<input id="serverIds" name="serverIds" type="hidden" class="input" />
+		<input id="serverCreateTimes" name="serverCreateTimes" type="hidden" class="input" />
+		<!-- <br> -->
+
+		<span class="label">服务器ID:</span>
+		<input type="text" class="input serverId" />
+		<span class="label pl">开服时间:</span>
+		<input type="text" class="input serverCreateTime" />
+		<br>
+	</div>
+
+	<br>
+
+	<span class="label">所用资源:</span>
+	<select id="resUrl" name="resUrl" class="select" >
+        <!--
+		{{range .ResUrls}}
+			<option value="{{.}}">{{.}}</option>
+		{{end}}
+        -->
+	</select>
+	<br>
+
+	<span class="label">安装机器:</span>
+	<select id="workerId" name="workerId" class="select">
+        <!--
+		{{range .WorkerIds}}
+			<option value="{{.Id}}">{{.Id}}_{{.ServerCount}}个服-DB_{{.WorkerUserDbUrl}}</option>
+		{{end}}
+        -->
+	</select>
+	<br>
+	<span class="label">数据库情况:</span>
+	<select id="dbused" name="dbused" class="select">
+        <!--
+		{{range .DBUsed}}
+			<option>{{.DbCname}}_{{.DbCount}}个服</option>
+		{{end}}
+        -->
+	</select>
+	<br>
+	
+	<hr>
+	<input type="submit" value="提交" />
+	<input id="popupHide" type="button" value="取消" />
+</form>
+
+<script type="text/javascript">
+	function addInputListener() {
+		$('#serverInfoArea .serverCreateTime').datetimepicker({
+			lang:'ch',
+			format:'Y-m-d',
+			timepicker:false,
+		});
+
+		var sep = "&&";
+		$('#serverInfoArea .serverId').blur(function() {
+			var serverIdsVal = "";
+			$('#serverInfoArea .serverId').each(function() {
+				var val = $(this).val();
+				if (val != "") {
+					serverIdsVal += val + sep;
+				}
+			});
+			serverIdsVal = serverIdsVal.substring(0, serverIdsVal.length-2);
+			$('#serverIds').val(serverIdsVal);
+		});
+
+		$('#serverInfoArea .serverCreateTime').blur(function() {
+			var serverCreateTimesVal = "";
+			$('#serverInfoArea .serverCreateTime').each(function() {
+				var val = $(this).val();
+				if (val != "") {
+					serverCreateTimesVal += val + sep;
+				}
+			});
+
+			serverCreateTimesVal = serverCreateTimesVal.substring(0, serverCreateTimesVal.length-2);
+			$('#serverCreateTimes').val(serverCreateTimesVal);
+		});
+	}
+	
+	addInputListener();
+
+	$('#addServer').click(function() {
+		$("#serverInfoArea").append('<span class="label">服务器ID:</span> <input type="text" class="input serverId" /> <span class="label pl">开服时间:</span> <input type="text" class="input serverCreateTime" /><br>');
+		addInputListener();
+	});
+
+	$('form').ajaxForm({
+		beforeSubmit: function(formData, jqForm, options) {
+			$('#serverInfoArea .serverId').each(function() {
+				if ($(this).val() == "") {
+					alert("请输入服务器ID！");
+					return false;
+				}
+			});
+
+			$('#serverInfoArea .serverCreateTime').each(function() {
+				var val = $(this).val();
+				if (val == "") {
+					alert("请输入开服时间！");
+					return false;
+				}
+			});
+
+			var serverIds = $("#serverIds").val();
+			if (serverIds == "") {
+				alert("请输入服务器ID！");
+				return false;
+			}
+
+			var serverCreateTimes = $("#serverCreateTimes").val();
+			if (serverCreateTimes == "") {
+				alert("请输入开服时间！");
+				return false;
+			}
+
+			var platformId = $('#platformId').val();
+			if (platformId == null) {
+				alert("请选择平台！");
+				return false;
+			}
+
+			var resUrl = $('#resUrl').val();
+			if (resUrl == null) {
+				alert("请选择资源！");
+				return false;
+			}
+
+			var workerId = $('#workerId').val();
+			if (workerId == null) {
+				alert("请选择安装机器！");
+				return false;
+			}
+
+			return confirm('确认操作？');
+		},
+
+	    success: function(s) {
+	    	// var sa = s.split("@@@")
+	    	// if (sa.length == 1) {
+	    	// 	alert(s);
+	    	// } else {
+	    	// 	var oTable = $('#servers').dataTable();
+	    	// 	oTable.fnAddData(sa);
+	    	// 	oTable.$('td').addClass('center');
+		    // 	popupHide();
+		    // 	alert("创建成功!");
+	    	// }
+	    	if (s == "1") {
+	    		popupHide();
+	    		alert("提交成功!");
+	    	} else {
+	    		alert(s);
+	    	}
+	    },
+	});
+
+
+	$('#popupHide').click(function() {
+		popupHide();
+	});
+</script>

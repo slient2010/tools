@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package pb;
+
+message MachineStatProto {
+        optional string innerip = 1;
+        optional string publicip = 2;
+        optional string cpu = 3;
+        optional string mem = 4;
+        optional string disk = 5;
+}
+

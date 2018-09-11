@@ -1,0 +1,24 @@
+# server configuration
+server:
+  address: 127.0.0.1
+  webport: 8080 # web
+  port: 20001  # for tcp connection
+  # secret: 6c5918be-7161-4381-a822-81ca3cb5a1c5
+  secret: 6c5918be-7161-43
+
+database:
+  ip: 172.19.1.11
+  port: 3306
+  username: username
+  password: password
+  dbname: devops
+  charset: utf8
+ 
+redisdb:
+  ip: 127.0.0.1
+  port: 6379
+  password: redis
+
+resource:
+  ip: 172.19.1.9
+  port: 80

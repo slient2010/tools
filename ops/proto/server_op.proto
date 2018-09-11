@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package pb;
+
+message MachineStatProto {
+	optional string cpu = 1;
+	optional string mem = 2;
+	optional string disk = 3;
+}
+
+
+message UpdateClientStatProto {
+        optional string worker_id = 1;
+        optional MachineStatProto machine_stat_proto = 2;
+}

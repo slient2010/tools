@@ -1,0 +1,243 @@
+{{ template "header" .}}
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        {{ template "nav" .}}
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">服务器登录权限管理</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            服务器权限列表
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">登录用户名</th>
+                                            <th class="text-center">上次登录跳板机IP</th>
+                                            <th class="text-center">上次登录时间</th>
+                                            <th class="text-center">账号创建时间</th>
+                                            <th class="text-center">账号可用时间</th>
+                                            <th class="text-center">编 辑</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{ range .}}
+                                        <tr class="gradeA">
+                                          <td class="text-center">{{ .Name  }}</td>
+                                         <!--  <td>{{ .Hosts    }}</td> -->
+                                          <!-- <td>{{ .Rsa_key      }}</td> -->
+                                          <td class="text-center"> {{ .LastIP      }}</td>                                          
+                                          <td class="text-center">{{ .LastTime         }}</td>
+                                          <td class="text-center">{{ .Created}}</td>
+                                          <td class="text-center">{{ .Time      }}</td>
+                                          <td>
+                                          &nbsp;&nbsp;&nbsp;&nbsp;<button title="查 看" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModalaAccountDetails{{.Name}}"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                                            <div class="modal fade" id="myModalaAccountDetails{{.Name}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                            &times;
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel">
+                                                            账号详细信息 
+                                                        </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label for="name">账号名称</label>
+                                                            <input type="text" class="form-control" name="name" id="name" value="{{ .Name }}" readonly>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="inputfile">可登录服务器(逗号分隔)</label>
+                                                            <textarea class="form-control" rows="4"  name="hosts" readonly="">{{ .Hosts }}</textarea>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="name">上次登录跳板机器客户端IP</label>
+                                                            <input type="text" class="form-control" name="name" id="name" value="{{ .LastIP }}" readonly>
+                                                        </div>
+                                                         <div class="form-group">
+                                                            <label for="name">上次登录跳板机器时间</label>
+                                                            <input type="text" class="form-control" name="name" id="name" value="{{ .LastTime }}" readonly>
+                                                        </div>    
+                                                        <div class="form-group">
+                                                            <label for="name">账号创建时间</label>
+                                                            <input type="text" class="form-control" name="name" id="name" value="{{ .Created }}" readonly>
+                                                        </div>    
+                                                        <div class="form-group">
+                                                            <label for="name">账号单次登录可用时长(h)</label>
+                                                            <input type="text" class="form-control" name="name" id="name" value="{{ .Time }}" readonly>
+                                                        </div>                                                                                                                                                                          
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">关 闭</button>
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                                </div><!-- /.modal -->
+                                            </div>
+
+
+                                            <button title="编 辑" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal{{.Name}}"><i class="fa fa-cog" aria-hidden="true"></i></button>
+                                            <a title="删 除" class="btn btn-danger btn-sm" href="./server?action=delete&account={{.Name}}" role="button" onclick="return clickcomfirmdel({{.Name}});" aria-label="Delete">
+                                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </a>
+                                            <!-- <a class="btn btn-danger btn-sm" href="./server?action=delete&account={{.Name}}" role="button" onclick="return clickcomfirmdel({{.Name}});" >删 除</a> -->
+                                            <div class="modal fade" id="myModal{{.Name}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <form role="form" method="post" action="/server">
+                                                <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                            &times;
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel">
+                                                            服务器权限更改 
+                                                        </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                      
+                                                        <div class="form-group">
+                                                            <label for="name">账号名称</label>
+                                                            <input type="text" class="form-control" name="name" id="name" 
+                                                                 value="{{ .Name }}" readonly>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="inputfile">可登录服务器(逗号分隔)</label>
+                                                            <!-- <input type="text" class="form-control" id="servers" 
+                                                                 value="{{ .Hosts }}"> -->
+                                                            <textarea class="form-control" rows="4"  name="hosts">{{ .Hosts }}</textarea>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="inputfile">Tips: 若需更新密钥对</label>
+                                                            <p>请联系服务器维护人员更新！</p>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button> -->
+                                                        
+                                                        <!-- <button type="submit" class="btn btn-primary" data-dismiss="modal"> -->
+                                                        <button type="submit" class="btn btn-primary btn-sm" onclick="return clickcomfirm()">提交更改</button>
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                                </div><!-- /.modal -->
+                                            </form>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                        {{end }}
+                                    </tbody>
+                                </table>
+                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModaladdaccount">添加新账号</button>
+                                <div class="modal fade" id="myModaladdaccount" tabindex="-1" role="dialog" aria-labelledby="myModaladdaccountLabel" aria-hidden="true">
+                                    <form role="form" method="post" action="/server">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times;</button>
+                                                    <h4 class="modal-title" id="myModaladdaccountLabel"> 添加账号</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="name">账号名称</label>
+                                                        <input type="text" class="form-control" name="name" id="name" value="" placeholder="输入英文账号">
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="inputfile">可登录服务器(逗号分隔)</label>
+                                                        <textarea class="form-control" rows="4"  name="hosts"></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="inputfile">公钥</label>
+                                                        <textarea class="form-control" rows="4"  name="key"></textarea>
+                                                    </div>                                                    
+                                                     <div class="form-group">
+                                                        <label for="name">登录服务器时长(h)</label>
+                                                         <input type="text" class="form-control" name="time" id="time" value="" placeholder="输入账号使用服务器时长(h)">
+                                                    </div>                                                       
+                                                    <div class="form-group">
+                                                        <label for="inputfile">Tips: 别忘记提供密钥对</label>
+                                                        <!-- <p>请联系服务器维护人员！</p> -->
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary btn-sm" onclick="return submitcomfirm()">提 交</button>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal -->
+                                    </form>
+                                </div>
+                                <!-- <a class="btn btn-info" href="/server?action=add_account" role="button">添加新账号</a> -->
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="static/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="static/js/metisMenu.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+
+    <!-- <script src="static/js/jquery.dataTables.min.js"></script> -->
+    <!-- <script src="static/js/dataTables.bootstrap.min.js"></script> -->
+
+    <!-- Custom Theme JavaScript -->
+    <script src="static/js/sb-admin-2.js"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+    <script>
+    function clickcomfirmdel(username) {
+      if(confirm("请确认是否删除"+username +"账号！" )) return true;
+      return false;
+    }
+    function clickcomfirm() {
+      if(confirm("请确认是否修改！" )) return true;
+      return false;
+    }
+    function submitcomfirm() {
+      if(confirm("请确认信息是否正确，数据提交后将立即生效！" )) return true;
+      return false;
+    }    
+    // $(document).ready(function() {
+    //     $('#dataTables-example').DataTable({
+    //             responsive: true
+    //     });
+    // });
+    </script>
+
+</body>
+
+</html>

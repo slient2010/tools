@@ -1,6 +1,9 @@
 # 我本地有一个 data-service.jar
 
-## 1. 编写启动脚本  data-service-start
+
+## 具体操作
+
+### 1. 编写启动脚本  data-service-start
 
 ```bash
 [root@iz2ze0fq2isg8vphkpos5sz shell]# more  data-service-start
@@ -13,7 +16,7 @@ java -jar /data/imgcloud/data-service.jar > /data/logs/data-service.log &
 echo $! > /var/run/data-service.pid
 ```
 
-## 2. 编写停止脚本
+### 2. 编写停止脚本
 
 ```bash
 [root@iz2ze0fq2isg8vphkpos5sz shell]# more data-service-stop 
@@ -30,19 +33,25 @@ kill -9 $PID
 Description=data-service for mongodb
 After=syslog.target network.target remote-fs.target nss-lookup.target
  
- [Service]
- Type=forking
- ExecStart=/data/shell/data-service-start
- ExecStop=/data/shell/data-service-stop
- PrivateTmp=true
-  
-  [Install]
-  WantedBy=multi-user.target
-  4. 相关命令
-  systemctl  enable   data-service    开机自启动
-  systemctl  stop  data-service  停止
-  system  start data-service  启动
+[Service]
+Type=forking
+ExecStart=/data/shell/data-service-start
+ExecStop=/data/shell/data-service-stop
+PrivateTmp=true
+ 
+[Install]
+WantedBy=multi-user.target
 ```
+
+### 4. 相关命令
+
+```
+  systemctl  enable   data-service   #  开机自启动
+  systemctl  stop  data-service  # 停止
+  system  start data-service  # 启动
+```
+
+## 参考资料
 
 >Ref
 

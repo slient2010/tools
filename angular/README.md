@@ -35,8 +35,9 @@ ng generate module app/routes --routing --spec=false
 ```bash
 ng add ng-zorro-antd --theme --styleex=less
 # 登录框架
-#ng g ng-zorro-antd:form-normal-login app/routes/passport --styleext=less --name=login
-ng g ng-zorro-antd:form-normal-login src/app/routes/passport --styleext=less --name=login --spec=false
+cd app/routes
+ng g ng-zorro-antd:form-normal-login passport --styleext=less --name=login --spec=false
+
 ```
 
 ## 增加拦截器

@@ -35,8 +35,10 @@ ng generate module app/routes --routing --spec=false
 ```bash
 ng add ng-zorro-antd --theme --styleex=less
 # 登录框架
-cd app/routes
-ng g ng-zorro-antd:form-normal-login passport --styleext=less --name=login --spec=false
+mkdir app/routes/passport
+cd app/routes/passport
+ng g ng-zorro-antd:form-normal-login --styleext=less --name=login --spec=false
+
 
 ```
 
